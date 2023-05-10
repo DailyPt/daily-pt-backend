@@ -16,7 +16,7 @@ export class ProfileEntity extends BaseEntity {
 
   @ApiProperty({ default: '저스틴 비버', type: 'string' })
   @Column({ name: 'full_name', type: 'varchar' })
-  fullName: string;
+  name: string;
 
   @ApiProperty({ default: '178.9', type: 'number' })
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })

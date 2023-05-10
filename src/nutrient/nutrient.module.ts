@@ -4,6 +4,6 @@ import { NutrientService } from './nutrient.service';
 
 @Module({
   controllers: [NutrientController],
-  providers: [NutrientService]
+  providers: [NutrientService],
 })
 export class NutrientModule {}

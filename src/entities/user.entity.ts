@@ -17,13 +17,13 @@ export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ default: 'code@start.today', type: 'string' })
+  @ApiProperty({ default: 729, type: 'number' })
   @Column({ type: 'varchar', nullable: false, unique: true })
-  email: string;
+  uid: string;
 
-  @ApiProperty({ default: '저스틴 비버', type: 'string' })
-  @Column({ type: 'varchar', nullable: true })
-  name: string;
+  @ApiProperty({ default: 'code@start.today', type: 'string' })
+  @Column({ type: 'varchar', nullable: false })
+  email: string;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -42,6 +42,6 @@ export class UserEntity extends BaseEntity {
 
   @ApiProperty()
   @OneToOne((type) => ProfileEntity, { cascade: true })
-  @JoinColumn({ name: 'contact' })
+  @JoinColumn()
   profile: ProfileEntity;
 }

@@ -19,9 +19,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  await app.listen(3000, () => {
+  await app.listen(process.env.PORT, () => {
     console.log(process.env);
-    console.log(`Daily PT Server Started at : ${3000}!!`);
+    console.log(`Daily PT Server Started at : ${process.env.PORT}!!`);
   });
 }
 

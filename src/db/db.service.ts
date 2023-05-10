@@ -17,6 +17,8 @@ export class DbService {
 
   async insertFoodDatas(): Promise<string> {
     try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       for (let i = 0; i < FOODS.length; i++) {
         const DATA = new FoodEntity();
         const convertToHundred: number = 100 / FOODS[i]['SERVING_SIZE'];

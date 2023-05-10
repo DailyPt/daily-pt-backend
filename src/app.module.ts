@@ -10,6 +10,7 @@ import { DietModule } from './diet/diet.module';
 import { NutrientModule } from './nutrient/nutrient.module';
 import { UserModule } from './user/user.module';
 import { DbModule } from './db/db.module';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
   imports: [
@@ -19,7 +20,9 @@ import { DbModule } from './db/db.module';
       ignoreEnvFile: process.env.NODE_ENV === 'prod',
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('dev', 'prod').required(),
-        //# TIMEZONE
+        // PORT
+        PORT: Joi.string().required(),
+        // TIMEZONE
         TZ: Joi.string().required(),
         // Database
         DB_HOST: Joi.string().required(),
@@ -27,6 +30,8 @@ import { DbModule } from './db/db.module';
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_NAME: Joi.string().required(),
+        // Firebase
+        FIREBASE_PROJECT_ID: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -45,6 +50,7 @@ import { DbModule } from './db/db.module';
     NutrientModule,
     UserModule,
     DbModule,
+    FirebaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,6 +3,8 @@ import { SwaggerModule, DocumentBuilder, getSchemaPath } from '@nestjs/swagger';
 import { ApiResponseOptions } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { boolean } from 'joi';
 import { SupplementEntity } from '../entities/supplement.entity';
+import { UserEntity } from '../entities/user.entity';
+import { ProfileEntity } from '../entities/profile.entity';
 
 export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
@@ -20,7 +22,7 @@ export function setupSwagger(app: INestApplication): void {
     .build();
 
   const document = SwaggerModule.createDocument(app, options, {
-    extraModels: [SupplementEntity, boolean],
+    extraModels: [UserEntity, ProfileEntity, SupplementEntity, boolean],
   });
   SwaggerModule.setup('api-docs', app, document);
 }
