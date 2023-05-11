@@ -5,7 +5,7 @@ import {
   NestMiddleware,
   Scope,
 } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'Express';
+import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../user/user.service';
 import * as admin from 'firebase-admin';
 import { UserEntity } from '../entities/user.entity';

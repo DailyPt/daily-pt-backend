@@ -11,7 +11,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DataResponse } from '../utils/swagger';
 import { SupplementEntity } from '../entities/supplement.entity';
 import { ExceptionHandler } from '../utils/ExceptionHandler';
-import { Request, Response } from 'Express';
+import { Request, Response } from 'express';
 
 @Controller('db')
 @UseFilters(new ExceptionHandler())
