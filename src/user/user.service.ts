@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ProfileEntity } from '../entities/profile.entity';
 
 @Injectable()
 export class UserService {
@@ -27,6 +29,36 @@ export class UserService {
       return this.userRepository.findOne({
         where: { uid },
       });
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+    }
+  }
+
+  async updateUserProfile(
+    user: UserEntity,
+    updateProfileDto: UpdateProfileDto,
+  ) {
+    try {
+      const today: Date = new Date();
+      const birthDate: Date = updateProfileDto.birth;
+      let age: number = today.getFullYear() - birthDate.getFullYear();
+      const m: number = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+
+      const bmi: number =
+        updateProfileDto.weight /
+        (updateProfileDto.height * updateProfileDto.height);
+
+      const profile: ProfileEntity = new ProfileEntity();
+      profile.name = updateProfileDto.name;
+      profile.age = age;
+      profile.gender = updateProfileDto.gender;
+      profile.height = updateProfileDto.height;
+      profile.weight = updateProfileDto.weight;
+      profile.bmi = bmi;
+      profile.bmr = null;
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
     }

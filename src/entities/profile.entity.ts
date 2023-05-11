@@ -32,7 +32,7 @@ export class ProfileEntity extends BaseEntity {
 
   @ApiProperty({ default: 'male', type: 'string' })
   @Column({ type: 'varchar', default: '' })
-  gender: number;
+  gender: string;
 
   @ApiProperty({ default: '23.1', type: 'number' })
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })

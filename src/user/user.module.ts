@@ -24,6 +24,11 @@ export class UserModule {
       path: 'user/token*',
       method: RequestMethod.ALL,
     });
+
+    // consumer.apply(FirebaseMiddleware).forRoutes({
+    //   path: 'user/token*',
+    //   method: RequestMethod.ALL,
+    // });
     //
     // consumer
     //   .apply(FirebaseMiddleware)

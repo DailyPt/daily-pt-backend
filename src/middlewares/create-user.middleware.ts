@@ -17,15 +17,16 @@ export class CreateUserMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { email, uid } = req.user;
     req.dbUser = await this.userService.findUserByUid(uid);
-    req.isNew = false;
+    req.isProfileLogged = false;
     if (!req.dbUser) {
       console.log('create user');
       req.dbUser = await this.userService.createUser(email, uid);
-      req.isNew = true;
+    } else if (req.dbUser.profile) {
+      req.isProfileLogged = true;
     }
 
     console.log(`db user: `, req.dbUser);
-    console.log(`is new: ${req.isNew}`);
+    console.log(`is new: ${req.isProfileLogged}`);
     next();
   }
 }
@@ -36,7 +37,7 @@ declare global {
     interface Request {
       user?: admin.auth.DecodedIdToken;
       dbUser?: UserEntity;
-      isNew?: boolean;
+      isProfileLogged?: boolean;
     }
   }
 }

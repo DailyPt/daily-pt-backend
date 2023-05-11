@@ -5,6 +5,8 @@ import { boolean } from 'joi';
 import { SupplementEntity } from '../entities/supplement.entity';
 import { UserEntity } from '../entities/user.entity';
 import { ProfileEntity } from '../entities/profile.entity';
+import { ResponseLoginDto } from '../user/dto/response-login.dto';
+import { UpdateProfileDto } from '../user/dto/update-profile.dto';
 
 export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
@@ -22,7 +24,14 @@ export function setupSwagger(app: INestApplication): void {
     .build();
 
   const document = SwaggerModule.createDocument(app, options, {
-    extraModels: [UserEntity, ProfileEntity, SupplementEntity, boolean],
+    extraModels: [
+      UserEntity,
+      ProfileEntity,
+      SupplementEntity,
+      ResponseLoginDto,
+      UpdateProfileDto,
+      boolean,
+    ],
   });
   SwaggerModule.setup('api-docs', app, document);
 }
