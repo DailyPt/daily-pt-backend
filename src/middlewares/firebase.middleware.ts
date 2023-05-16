@@ -13,11 +13,7 @@ export class FirebaseMiddleware implements NestMiddleware {
   constructor(private firebase: FirebaseService) {}
 
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
-    console.log('firebase');
-    console.log(req.headers);
     const { authorization } = req.headers;
-    console.log(authorization);
-    console.log('??');
 
     if (!authorization) {
       throw new HttpException(

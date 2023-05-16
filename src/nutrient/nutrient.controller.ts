@@ -67,7 +67,11 @@ export class NutrientController {
   })
   @ApiResponse(DataResponse(HttpStatus.OK, '로그인 완료!', null))
   @Put('token/nutrient/:id')
-  updateNutrient(@Req() req: Request, @Res() res: Response) {
+  updateNutrient(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '',

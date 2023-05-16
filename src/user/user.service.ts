@@ -40,10 +40,16 @@ export class UserService {
   async updateUserProfile(
     user: UserEntity,
     updateProfileDto: UpdateProfileDto,
-  ): Promise<ProfileEntity> {
+  ): Promise<UserEntity> {
     try {
+      if (!user.profile) user.profile = new ProfileEntity();
+
       const today: Date = new Date();
-      const birthDate: Date = updateProfileDto.birth;
+      const birthDate: Date = new Date(
+        updateProfileDto.year,
+        updateProfileDto.month,
+        updateProfileDto.day,
+      );
       let age: number = today.getFullYear() - birthDate.getFullYear();
       const m: number = today.getMonth() - birthDate.getMonth();
       if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
@@ -57,7 +63,7 @@ export class UserService {
       user.profile.weight = updateProfileDto.weight;
       user.profile.bmi =
         updateProfileDto.weight /
-        (updateProfileDto.height * updateProfileDto.height);
+        ((updateProfileDto.height / 100) * (updateProfileDto.height / 100));
       user.profile.bmr =
         updateProfileDto.gender === 'male'
           ? 66.5 +
@@ -69,7 +75,8 @@ export class UserService {
             1.85 * updateProfileDto.height -
             4.676 * age;
 
-      return this.profileRepository.save(user.profile);
+      await this.profileRepository.save(user.profile);
+      return this.userRepository.save(user);
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
     }

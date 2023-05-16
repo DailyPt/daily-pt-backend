@@ -13,10 +13,20 @@ export class UpdateProfileDto {
   @IsString()
   readonly name: string;
 
-  @ApiProperty({ type: 'string', format: 'date-time' })
+  @ApiProperty({ type: 'number', default: 1998 })
   @IsNotEmpty()
-  @IsString()
-  readonly birth: Date;
+  @IsNumber()
+  readonly year: number;
+
+  @ApiProperty({ type: 'number', default: 11 })
+  @IsNotEmpty()
+  @IsNumber()
+  readonly month: number;
+
+  @ApiProperty({ type: 'number', default: 11 })
+  @IsNotEmpty()
+  @IsNumber()
+  readonly day: number;
 
   @ApiProperty({ default: 'male', type: 'string' })
   @IsNotEmpty()

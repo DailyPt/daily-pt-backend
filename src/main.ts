@@ -15,7 +15,6 @@ async function bootstrap() {
     credentials: true,
   });
   setupSwagger(app);
-  app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

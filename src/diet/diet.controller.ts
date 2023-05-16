@@ -57,7 +57,11 @@ export class DietController {
   })
   @ApiResponse(DataResponse(HttpStatus.OK, '로그인 완료!', null))
   @Get('token/diet')
-  getAllDietByDate(@Req() req: Request, @Res() res: Response) {
+  getAllDietByDate(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '',
