@@ -5,6 +5,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 export class LoggerMiddleware implements NestMiddleware {
   use(request: Request, response: Response, next: () => void) {
     const { method, url } = request;
+    console.log(request.headers);
 
     const start = new Date();
     response.on('finish', () => {
