@@ -66,7 +66,7 @@ jobs:
           IMAGE_TAG: ${{ github.run_number }}
         run: |
           cd exqress-kubernetes
-          git config --global user.email "xman0120@github.com"
+          git config --global user.email "xman0120@naver.com"
           git config --global user.name "suhwan12"
           git commit -am "Update image tag $IMAGE_TAG"
           git push -u origin main
