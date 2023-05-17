@@ -53,7 +53,7 @@ jobs:
       # 새 이미지 버전으로 파일 수정
       - name: Update Kubernetes object to new image
         env:
-          DOCKERHUB_ID: suhwan11
+          DOCKERHUB_ID: ${{secrets.DOCKERHUB_USERNAME}}
           DOCKERHUB_REPOSITORY: daily-pt-backend
           IMAGE_TAG: ${{ github.run_number }}
         run: |
