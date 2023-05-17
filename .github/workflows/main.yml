@@ -25,7 +25,7 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
       
 
-      - name: Build, tag, and push the image to Amazon ECR
+      - name: Build, tag, and push the image to DockerHub
         id: build-image
         env:
           DOCKERHUB_ID: ${{secrets.DOCKERHUB_USERNAME}}
@@ -51,7 +51,7 @@ jobs:
           path: daily-pt-infra # 최상위 경로로 repository와 동일하게 설정
 
       # 새 이미지 버전으로 파일 수정
-      - name: Update Kubernetes resources
+      - name: Update Kubernetes object to new image
         env:
           DOCKERHUB_ID: suhwan11
           DOCKERHUB_REPOSITORY: daily-pt-backend
@@ -61,7 +61,7 @@ jobs:
           sed -i "s|image:.*|image: $DOCKERHUB_ID\/$DOCKERHUB_REPOSITORY:$IMAGE_TAG|g" daily-pt-backend-deployment.yaml
           cat daily-pt-backend-deployment.yaml
       # 수정된 파일 commit & push
-      - name: Commit files
+      - name: Commit and push files
         env:
           IMAGE_TAG: ${{ github.run_number }}
         run: |
