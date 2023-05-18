@@ -5,11 +5,13 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Post,
   Put,
   Query,
   Req,
   Res,
+  UploadedFile,
   UseFilters,
 } from '@nestjs/common';
 import { DietService } from './diet.service';
@@ -93,6 +95,19 @@ export class DietController {
   @ApiResponse(DataResponse(HttpStatus.OK, '식단 생성 완료!', null))
   @Post('')
   createDiet(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'jpeg',
+        })
+        .addMaxSizeValidator({
+          maxSize: 1000,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    photo: Express.Multer.File,
     @Body() createDietDto: CreateDietDto,
     @Req() req: Request,
     @Res() res: Response,
