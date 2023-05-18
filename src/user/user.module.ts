@@ -21,7 +21,7 @@ import { FirebaseService } from '../firebase/firebase.service';
 export class UserModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(FirebaseMiddleware, CreateUserMiddleware).forRoutes({
-      path: 'user/token*',
+      path: 'user/*',
       method: RequestMethod.ALL,
     });
 

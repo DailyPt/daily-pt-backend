@@ -1,9 +1,8 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ProfileDto } from './dto/profile.dto';
 import { ProfileEntity } from '../entities/profile.entity';
 
 @Injectable()
@@ -37,43 +36,25 @@ export class UserService {
     }
   }
 
-  async updateUserProfile(
+  async createUserProfile(
     user: UserEntity,
-    updateProfileDto: UpdateProfileDto,
+    profileDto: ProfileDto,
   ): Promise<UserEntity> {
     try {
-      if (!user.profile) user.profile = new ProfileEntity();
+      user.profile = new ProfileEntity();
 
-      const today: Date = new Date();
-      const birthDate: Date = new Date(
-        updateProfileDto.year,
-        updateProfileDto.month,
-        updateProfileDto.day,
+      user.profile.name = profileDto.name;
+      user.profile.age = this.getAge(profileDto.birth);
+      user.profile.gender = profileDto.gender;
+      user.profile.height = profileDto.height;
+      user.profile.weight = profileDto.weight;
+      user.profile.bmi = this.getBmi(profileDto.weight, profileDto.height);
+      user.profile.bmr = this.getBmr(
+        profileDto.gender,
+        profileDto.weight,
+        profileDto.height,
+        user.profile.age,
       );
-      let age: number = today.getFullYear() - birthDate.getFullYear();
-      const m: number = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-
-      user.profile.name = updateProfileDto.name;
-      user.profile.age = age;
-      user.profile.gender = updateProfileDto.gender;
-      user.profile.height = updateProfileDto.height;
-      user.profile.weight = updateProfileDto.weight;
-      user.profile.bmi =
-        updateProfileDto.weight /
-        ((updateProfileDto.height / 100) * (updateProfileDto.height / 100));
-      user.profile.bmr =
-        updateProfileDto.gender === 'male'
-          ? 66.5 +
-            13.75 * updateProfileDto.weight +
-            5.003 * updateProfileDto.height -
-            6.75 * age
-          : 655.1 +
-            9.563 * updateProfileDto.weight +
-            1.85 * updateProfileDto.height -
-            4.676 * age;
 
       await this.profileRepository.save(user.profile);
       return this.userRepository.save(user);
@@ -82,30 +63,50 @@ export class UserService {
     }
   }
 
-  /*
-
-
-  async findUserByEmail(email: string): Promise<UserEntity> {
+  async updateUserProfile(
+    user: UserEntity,
+    profileDto: ProfileDto,
+  ): Promise<UserEntity> {
     try {
-      const user: UserEntity = await this.userRepository.findOne({
-        where: { email },
-        relations: ['contact'],
-      });
-      if (!user) {
-        throw new HttpException(
-          `${email} : 없는 이메일 입니다.`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
+      user.profile.name = profileDto.name;
+      user.profile.age = this.getAge(profileDto.birth);
+      user.profile.gender = profileDto.gender;
+      user.profile.height = profileDto.height;
+      user.profile.weight = profileDto.weight;
+      user.profile.bmi = this.getBmi(profileDto.weight, profileDto.height);
+      user.profile.bmr = this.getBmr(
+        profileDto.gender,
+        profileDto.weight,
+        profileDto.height,
+        user.profile.age,
+      );
 
-      return user;
+      await this.profileRepository.save(user.profile);
+      return this.userRepository.save(user);
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
     }
   }
 
-  async checkValidationOfNickname(nickname: string): Promise<boolean> {
-    return !(await this.userRepository.findOneBy({ nickname }));
+  getAge(birth: string): number {
+    const [year, month, day] = birth.split('/');
+    const today: Date = new Date();
+    const birthDate: Date = new Date(Number(year), Number(month), Number(day));
+    let age: number = today.getFullYear() - birthDate.getFullYear();
+    const m: number = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
-  */
+
+  getBmi(weight: number, height: number): number {
+    return weight / ((height / 100) * (height / 100));
+  }
+
+  getBmr(gender: string, weight: number, height: number, age: number): number {
+    return gender === 'male'
+      ? 66.5 + 13.75 * weight + 5.003 * height - 6.75 * age
+      : 655.1 + 9.563 * weight + 1.85 * height - 4.676 * age;
+  }
 }

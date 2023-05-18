@@ -35,7 +35,7 @@ import { ProfileEntity } from '../entities/profile.entity';
 export class DietModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(FirebaseMiddleware, CreateUserMiddleware).forRoutes({
-      path: 'diet/token*',
+      path: 'diet/*',
       method: RequestMethod.ALL,
     });
   }

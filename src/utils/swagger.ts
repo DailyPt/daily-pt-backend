@@ -6,7 +6,7 @@ import { SupplementEntity } from '../entities/supplement.entity';
 import { UserEntity } from '../entities/user.entity';
 import { ProfileEntity } from '../entities/profile.entity';
 import { ResponseLoginDto } from '../user/dto/response-login.dto';
-import { UpdateProfileDto } from '../user/dto/update-profile.dto';
+import { ProfileDto } from '../user/dto/profile.dto';
 import { FoodEntity } from '../entities/food.entity';
 
 export function setupSwagger(app: INestApplication): void {
@@ -31,7 +31,7 @@ export function setupSwagger(app: INestApplication): void {
       SupplementEntity,
       FoodEntity,
       ResponseLoginDto,
-      UpdateProfileDto,
+      ProfileDto,
       boolean,
     ],
   });

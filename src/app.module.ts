@@ -11,6 +11,7 @@ import { NutrientModule } from './nutrient/nutrient.module';
 import { UserModule } from './user/user.module';
 import { DbModule } from './db/db.module';
 import { FirebaseModule } from './firebase/firebase.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { FirebaseModule } from './firebase/firebase.module';
     UserModule,
     DbModule,
     FirebaseModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
