@@ -26,7 +26,7 @@ export class CreateUserMiddleware implements NestMiddleware {
     }
 
     console.log(`db user: `, req.dbUser);
-    console.log(`is new: ${req.isProfileLogged}`);
+    console.log(`is profile logged: ${req.isProfileLogged}`);
     next();
   }
 }

@@ -22,6 +22,8 @@ import { Request, Response } from 'express';
 import { ExceptionHandler } from '../utils/ExceptionHandler';
 import { ResponseLoginDto } from './dto/response-login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ProfileEntity } from '../entities/profile.entity';
+import { UserEntity } from '../entities/user.entity';
 
 @Controller('user')
 @UseFilters(new ExceptionHandler())
@@ -64,13 +66,18 @@ export class UserController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const updateProfile: UpdateProfileDto = null;
+    const user: UserEntity = await this.userService.updateUserProfile(
+      req.dbUser,
+      updateProfileDto,
+    );
 
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '프로필 수정 완료!',
-      data: updateProfile,
+      data: user.profile,
     });
+
+    console.log(res.statusCode);
   }
 
   @ApiBearerAuth('firebase_token')
@@ -83,12 +90,12 @@ export class UserController {
   )
   @Get('token/profile')
   async getProfile(@Req() req: Request, @Res() res: Response) {
-    const updateProfileDto: UpdateProfileDto = null;
-
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '프로필 조회 완료!',
-      data: updateProfileDto,
+      data: req.dbUser.profile,
     });
+
+    console.log(res.statusCode);
   }
 }

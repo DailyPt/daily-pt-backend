@@ -11,6 +11,8 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(ProfileEntity)
+    private profileRepository: Repository<ProfileEntity>,
   ) {}
 
   async createUser(email: string, uid: string): Promise<UserEntity> {
@@ -28,6 +30,7 @@ export class UserService {
     try {
       return this.userRepository.findOne({
         where: { uid },
+        relations: ['profile'],
       });
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
@@ -37,55 +40,49 @@ export class UserService {
   async updateUserProfile(
     user: UserEntity,
     updateProfileDto: UpdateProfileDto,
-  ) {
+  ): Promise<UserEntity> {
     try {
+      if (!user.profile) user.profile = new ProfileEntity();
+
       const today: Date = new Date();
-      const birthDate: Date = updateProfileDto.birth;
+      const birthDate: Date = new Date(
+        updateProfileDto.year,
+        updateProfileDto.month,
+        updateProfileDto.day,
+      );
       let age: number = today.getFullYear() - birthDate.getFullYear();
       const m: number = today.getMonth() - birthDate.getMonth();
       if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
       }
 
-      const bmi: number =
+      user.profile.name = updateProfileDto.name;
+      user.profile.age = age;
+      user.profile.gender = updateProfileDto.gender;
+      user.profile.height = updateProfileDto.height;
+      user.profile.weight = updateProfileDto.weight;
+      user.profile.bmi =
         updateProfileDto.weight /
-        (updateProfileDto.height * updateProfileDto.height);
+        ((updateProfileDto.height / 100) * (updateProfileDto.height / 100));
+      user.profile.bmr =
+        updateProfileDto.gender === 'male'
+          ? 66.5 +
+            13.75 * updateProfileDto.weight +
+            5.003 * updateProfileDto.height -
+            6.75 * age
+          : 655.1 +
+            9.563 * updateProfileDto.weight +
+            1.85 * updateProfileDto.height -
+            4.676 * age;
 
-      const profile: ProfileEntity = new ProfileEntity();
-      profile.name = updateProfileDto.name;
-      profile.age = age;
-      profile.gender = updateProfileDto.gender;
-      profile.height = updateProfileDto.height;
-      profile.weight = updateProfileDto.weight;
-      profile.bmi = bmi;
-      profile.bmr = null;
+      await this.profileRepository.save(user.profile);
+      return this.userRepository.save(user);
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
     }
   }
 
   /*
-  async updateUserInformation(
-    user: UserEntity,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity> {
-    if (updateUserDto.nickname) user.nickname = updateUserDto.nickname;
-    if (updateUserDto.name) user.name = updateUserDto.name;
-    if (updateUserDto.birth) user.birth = updateUserDto.birth;
-    if (updateUserDto.phone) user.contact.phone = updateUserDto.phone;
-    if (updateUserDto.github) user.contact.github = updateUserDto.github;
-    if (updateUserDto.jungol) user.contact.jungol = updateUserDto.jungol;
-    if (updateUserDto.baekjoon) user.contact.baekjoon = updateUserDto.baekjoon;
-    if (updateUserDto.kaggle) user.contact.kaggle = updateUserDto.kaggle;
-
-    try {
-      await this.contactRepository.save(user.contact);
-      return await this.userRepository.save(user);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
-    }
-  }
-
 
 
   async findUserByEmail(email: string): Promise<UserEntity> {
