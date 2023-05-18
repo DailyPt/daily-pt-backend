@@ -7,26 +7,16 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateProfileDto {
+export class ProfileDto {
   @ApiProperty({ default: '조연준', type: 'string' })
   @IsNotEmpty()
   @IsString()
   readonly name: string;
 
-  @ApiProperty({ type: 'number', default: 1998 })
+  @ApiProperty({ type: 'string', default: '1998/11/11' })
   @IsNotEmpty()
   @IsNumber()
-  readonly year: number;
-
-  @ApiProperty({ type: 'number', default: 11 })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly month: number;
-
-  @ApiProperty({ type: 'number', default: 11 })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly day: number;
+  readonly birth: string;
 
   @ApiProperty({ default: 'male', type: 'string' })
   @IsNotEmpty()
