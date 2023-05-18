@@ -15,7 +15,7 @@ export class ProfileDto {
 
   @ApiProperty({ type: 'string', default: '1998/11/11' })
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   readonly birth: string;
 
   @ApiProperty({ default: 'male', type: 'string' })
