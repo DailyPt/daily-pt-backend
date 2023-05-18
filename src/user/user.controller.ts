@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
   HttpStatus,
   Post,
   Put,
@@ -12,18 +13,15 @@ import {
 import { UserService } from './user.service';
 import {
   ApiBearerAuth,
-  ApiHeader,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { DataResponse } from '../utils/swagger';
-import { SupplementEntity } from '../entities/supplement.entity';
 import { Request, Response } from 'express';
 import { ExceptionHandler } from '../utils/ExceptionHandler';
 import { ResponseLoginDto } from './dto/response-login.dto';
 import { ProfileDto } from './dto/profile.dto';
-import { ProfileEntity } from '../entities/profile.entity';
 import { UserEntity } from '../entities/user.entity';
 
 @Controller('user')
@@ -109,6 +107,12 @@ export class UserController {
   @ApiResponse(DataResponse(HttpStatus.OK, '프로필 조회 완료!', ProfileDto))
   @Get('profile')
   async getProfile(@Req() req: Request, @Res() res: Response) {
+    if (!req.isProfileLogged)
+      throw new HttpException(
+        'user profile is not exist.',
+        HttpStatus.BAD_REQUEST,
+      );
+
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '프로필 조회 완료!',

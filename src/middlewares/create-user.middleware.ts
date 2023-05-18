@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NestMiddleware,
-  Scope,
-} from '@nestjs/common';
+import { Injectable, NestMiddleware, Scope } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../user/user.service';
 import * as admin from 'firebase-admin';

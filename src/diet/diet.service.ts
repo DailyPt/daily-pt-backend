@@ -12,6 +12,4 @@ export class DietService {
     @InjectRepository(IngredientEntity)
     private ingredientRepository: Repository<IngredientEntity>,
   ) {}
-
-  async createDiet() {}
 }
