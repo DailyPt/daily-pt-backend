@@ -59,6 +59,7 @@ export class UserService {
       await this.profileRepository.save(user.profile);
       return this.userRepository.save(user);
     } catch (e) {
+      console.log(profileDto);
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
     }
   }
