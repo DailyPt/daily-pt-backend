@@ -65,7 +65,7 @@ export class UserController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const user: UserEntity = await this.userService.updateUserProfile(
+    const user: UserEntity = await this.userService.createUserProfile(
       req.dbUser,
       profileDto,
     );
@@ -89,7 +89,7 @@ export class UserController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const user: UserEntity = await this.userService.createUserProfile(
+    const user: UserEntity = await this.userService.updateUserProfile(
       req.dbUser,
       profileDto,
     );
