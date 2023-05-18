@@ -12,6 +12,7 @@ import { UserModule } from './user/user.module';
 import { DbModule } from './db/db.module';
 import { FirebaseModule } from './firebase/firebase.module';
 import { SearchModule } from './search/search.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { SearchModule } from './search/search.module';
     DbModule,
     FirebaseModule,
     SearchModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
