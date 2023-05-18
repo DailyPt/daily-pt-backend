@@ -2,9 +2,12 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   ParseFilePipeBuilder,
   Post,
   Put,
@@ -26,6 +29,7 @@ import { ArrayResponse, DataResponse } from '../utils/swagger';
 import { Request, Response } from 'express';
 import { CreateDietDto } from './dto/create-diet.dto';
 import { UpdateDietDto } from './dto/update-diet.dto';
+import { ApiFile } from '../utils/api-file.decorator';
 
 @Controller('diet')
 @UseFilters(new ExceptionHandler())
@@ -93,29 +97,35 @@ export class DietController {
     description: '사용자의 식단을 생성한다.',
   })
   @ApiResponse(DataResponse(HttpStatus.OK, '식단 생성 완료!', null))
+  @ApiFile('photo')
   @Post('')
   createDiet(
     @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: 'jpeg',
-        })
-        .addMaxSizeValidator({
-          maxSize: 1000,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
     )
     photo: Express.Multer.File,
     @Body() createDietDto: CreateDietDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
+    console.log(photo);
+    const diet: CreateDietDto = {
+      foodId: Number(createDietDto.foodId),
+      memo: createDietDto.memo,
+      rating: Number(createDietDto.rating),
+      date: createDietDto.date,
+    };
+    console.log(new Date(createDietDto.date));
+
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '',
-      data: null,
+      data: { name: photo.originalname, createDietDto: diet },
     });
   }
 
