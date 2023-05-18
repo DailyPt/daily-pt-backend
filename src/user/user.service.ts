@@ -41,6 +41,12 @@ export class UserService {
     profileDto: ProfileDto,
   ): Promise<UserEntity> {
     try {
+      if (user.profile) {
+        throw new HttpException(
+          'user profile is already exist.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       user.profile = new ProfileEntity();
 
       user.profile.name = profileDto.name;
@@ -69,6 +75,13 @@ export class UserService {
     profileDto: ProfileDto,
   ): Promise<UserEntity> {
     try {
+      if (!user.profile) {
+        throw new HttpException(
+          'user profile is not exist.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       user.profile.name = profileDto.name;
       user.profile.age = this.getAge(profileDto.birth);
       user.profile.gender = profileDto.gender;
