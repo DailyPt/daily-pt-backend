@@ -26,7 +26,9 @@ jobs:
           
       - name: Modify file using sed
         run: |
-          env
+          sed -i 's/D_P/${{ secrets.DB_PASSWORD }}/g' env.txt
+          sed -i 's/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g' env.txt
+          sed -i 's/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g' env.txt | cat -n
           sed -i 's/D_P/${{ secrets.DB_PASSWORD }}/g' .env.prod
           sed -i 's/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g' .env.prod
           sed -i 's/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g' .env.prod
