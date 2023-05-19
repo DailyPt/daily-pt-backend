@@ -32,9 +32,9 @@ jobs:
           DOCKERHUB_REPOSITORY: daily-pt-backend
           IMAGE_TAG: ${{ github.run_number }}
         run: |
-          sed -i -e 's/D_P/${{ secrets.DB_PASSWORD }}/g' /home/runner/work/daily-pt-backend/daily-pt-backend/.env.prod
-          sed -i -e 's/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g' /home/runner/work/daily-pt-backend/daily-pt-backend/.env.prod
-          sed -i -e 's/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g' /home/runner/work/daily-pt-backend/daily-pt-backend/.env.prod
+          sed 's/D_P/${{ secrets.DB_PASSWORD }}/g' .env > .env.dp
+          sed 's/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g' .env.dp > .env.aa
+          sed 's/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g' .env.aa > .env.prod
           docker build -t $DOCKERHUB_ID/$DOCKERHUB_REPOSITORY:$IMAGE_TAG .
           docker tag $DOCKERHUB_ID/$DOCKERHUB_REPOSITORY:$IMAGE_TAG $DOCKERHUB_ID/$DOCKERHUB_REPOSITORY:$IMAGE_TAG
           echo "Pushing image to DockerHub..."
