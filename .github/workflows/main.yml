@@ -24,12 +24,19 @@ jobs:
           username: ${{secrets.DOCKERHUB_USERNAME}}
           password: ${{secrets.DOCKERHUB_TOKEN}}
           
-      - name: Modify file using sed
-        run: |          
+      - name: Modify file using sed - DB_PASSWORD
+        run: |                    
+          sed -i "s/D_P/${{ secrets.DB_PASSWORD }}/g" .env.prod
           cat .env.prod
           
-          sed -i "s/D_P/${{ secrets.DB_PASSWORD }}/g" .env.prod
+      - name: Modify file using sed - AWS_ACCESS_KEY_ID
+        run: |          
+          sed -i "s/D_P/${{ secrets.AWS_ACCESS_KEY_ID }}/g" .env.prod
+          cat .env.prod
           
+      - name: Modify file using sed - AWS_SECRET_ACCESS_KEY
+        run: |         
+          sed -i "s/D_P/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g" .env.prod 
           cat .env.prod
           
         # sed "s/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g" .env > .env.mid
@@ -44,7 +51,6 @@ jobs:
           DOCKERHUB_REPOSITORY: daily-pt-backend
           IMAGE_TAG: ${{ github.run_number }}
         run: |
-          sed --h
           docker build -t $DOCKERHUB_ID/$DOCKERHUB_REPOSITORY:$IMAGE_TAG .
           docker tag $DOCKERHUB_ID/$DOCKERHUB_REPOSITORY:$IMAGE_TAG $DOCKERHUB_ID/$DOCKERHUB_REPOSITORY:$IMAGE_TAG
           echo "Pushing image to DockerHub..."
