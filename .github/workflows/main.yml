@@ -31,11 +31,14 @@ jobs:
           SECRET_ACCESS_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           pwd 
-          
+          env
           sed 's/D_P/${ $DB_PASSWORD }/g' env.txt > env1.txt
           sed 's/A_A_K_I/${ $ACCESS_KEY_ID }/g' env1.txt > env2.txt
           sed 's/A_S_A_K/${ $SECRET_ACCESS_KEY }/g' env2.txt > .env.prod
           cat .env.prod
+          
+          
+          sed -i 's/A_S_A_K/${ $SECRET_ACCESS_KEY }/g' .env.prod
           
       - name: Build, tag, and push the image to DockerHub
         id: build-image
