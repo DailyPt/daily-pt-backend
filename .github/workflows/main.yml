@@ -32,6 +32,10 @@ jobs:
         run: |
           pwd 
           env
+          echo ${DB_PASSWORD}
+          echo `${DB_PASSWORD}`
+          echo '${DB_PASSWORD}'
+          
           sed 's/D_P/${ DB_PASSWORD }/g' env.txt > env1.txt
           sed 's/A_A_K_I/${ ACCESS_KEY_ID }/g' env1.txt > env2.txt
           sed 's/A_S_A_K/${ SECRET_ACCESS_KEY }/g' env2.txt > .env.prod
