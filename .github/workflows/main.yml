@@ -26,18 +26,12 @@ jobs:
           
       - name: Modify file using sed
         run: |          
-          sed "s/D_P/${{ secrets.DB_PASSWORD }}/g" env.txt > env1.txt
-          sed "s/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g" env1.txt > env2.txt
-          sed "s/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g" env2.txt > .env.prod
           cat .env.prod
           
-          
-          sed -i 's/D_P/${{ secrets.DB_PASSWORD }}/g' .env.prod
-          sed -i 's/A_S_A_K/${{ secrets.AWS_ACCESS_KEY_ID }}/g' .env.prod
-          sed -i 's/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g' .env.prod
-          cat .env.prod
-          
-          
+          sed "s/D_P/${{ secrets.DB_PASSWORD }}/g" .env.prod
+          sed "s/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g" .env.prod
+          sed "s/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g" .env.prod
+          cat .env.prod     
           
           
       - name: Build, tag, and push the image to DockerHub
