@@ -29,9 +29,10 @@ jobs:
           ls
           pwd
           
-          sed -i 's/D_P/123/g' env.txt
-          sed -i 's/A_A_K_I/456/g' env.txt
-          sed -i 's/A_S_A_K/789/g' env.txt | cat -n
+          sed 's/D_P/123/g' env.txt > env1.txt
+          sed 's/A_A_K_I/456/g' env1.txt > env2.txt
+          sed 's/A_S_A_K/789/g' env2.txt > env3.txt
+          cat env3.txt
           
           sed -i 's/D_P/${{ secrets.DB_PASSWORD }}/g' .env.prod
           sed -i 's/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g' .env.prod
