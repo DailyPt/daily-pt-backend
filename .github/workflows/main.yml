@@ -28,9 +28,9 @@ jobs:
         run: |          
           cat .env.prod
           
-          sed "s/D_P/${{ secrets.DB_PASSWORD }}/g" .env.prod
-          sed "s/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g" .env.prod
-          sed "s/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g" .env.prod
+          sed -i "s/D_P/${{ secrets.DB_PASSWORD }}/g" .env.prod
+          sed -i "s/A_A_K_I/${{ secrets.AWS_ACCESS_KEY_ID }}/g" .env.prod
+          sed -i "s/A_S_A_K/${{ secrets.AWS_SECRET_ACCESS_KEY }}/g" .env.prod
           cat .env.prod     
           
           
