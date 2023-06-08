@@ -30,12 +30,17 @@ import { Request, Response } from 'express';
 import { CreateDietDto } from './dto/create-diet.dto';
 import { UpdateDietDto } from './dto/update-diet.dto';
 import { ApiFile } from '../utils/api-file.decorator';
+import { AwsService } from '../aws/aws.service';
+import { DietEntity } from '../entities/diet.entity';
 
 @Controller('diet')
 @UseFilters(new ExceptionHandler())
 @ApiTags('DIET API')
 export class DietController {
-  constructor(private readonly dietService: DietService) {}
+  constructor(
+    private readonly dietService: DietService,
+    private readonly awsService: AwsService,
+  ) {}
 
   @ApiBearerAuth('firebase_token')
   @ApiOperation({
@@ -99,7 +104,7 @@ export class DietController {
   @ApiResponse(DataResponse(HttpStatus.OK, '식단 생성 완료!', null))
   @ApiFile('photo')
   @Post('')
-  createDiet(
+  async createDiet(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -114,18 +119,19 @@ export class DietController {
     @Res() res: Response,
   ) {
     console.log(photo);
-    const diet: CreateDietDto = {
-      foodId: Number(createDietDto.foodId),
-      memo: createDietDto.memo,
-      rating: Number(createDietDto.rating),
-      date: createDietDto.date,
-    };
-    console.log(new Date(createDietDto.date));
+    const { key, s3Object, contentType, url } =
+      await this.awsService.uploadFileToS3('images', photo);
+
+    const result: DietEntity = await this.dietService.createDiet(
+      req.dbUser.id,
+      createDietDto,
+      url,
+    );
 
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '',
-      data: { name: photo.originalname, createDietDto: diet },
+      data: {},
     });
   }
 

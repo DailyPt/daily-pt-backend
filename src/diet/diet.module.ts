@@ -10,6 +10,7 @@ import { CreateUserMiddleware } from '../middlewares/create-user.middleware';
 import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
 import { ProfileEntity } from '../entities/profile.entity';
+import { AwsService } from '../aws/aws.service';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProfileEntity } from '../entities/profile.entity';
     FirebaseService,
     FirebaseMiddleware,
     UserService,
+    AwsService,
   ],
 })
 export class DietModule {
