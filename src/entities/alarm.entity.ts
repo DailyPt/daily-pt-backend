@@ -14,6 +14,36 @@ export class AlarmEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column('int', { name: 'user_id', nullable: false })
+  userId: number;
+
+  @Column('int', { name: 'nutrient_id', nullable: false })
+  nutrientId: number;
+
+  @Column('boolean', { name: 'sunday', default: false })
+  sunday: boolean;
+
+  @Column('boolean', { name: 'monday', default: false })
+  monday: boolean;
+
+  @Column('boolean', { name: 'tuesday', default: false })
+  tuesday: boolean;
+
+  @Column('boolean', { name: 'wednesday', default: false })
+  wednesday: boolean;
+
+  @Column('boolean', { name: 'thursday', default: false })
+  thursday: boolean;
+
+  @Column('boolean', { name: 'friday', default: false })
+  friday: boolean;
+
+  @Column('boolean', { name: 'saturday', default: false })
+  saturday: boolean;
+
+  @Column('varchar', { name: 'time' })
+  time: string;
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',

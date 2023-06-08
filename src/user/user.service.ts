@@ -49,6 +49,7 @@ export class UserService {
       }
       user.profile = new ProfileEntity();
 
+      user.profile.birth = profileDto.birth;
       user.profile.name = profileDto.name;
       user.profile.age = this.getAge(profileDto.birth);
       user.profile.gender = profileDto.gender;
@@ -82,6 +83,7 @@ export class UserService {
         );
       }
 
+      user.profile.birth = profileDto.birth;
       user.profile.name = profileDto.name;
       user.profile.age = this.getAge(profileDto.birth);
       user.profile.gender = profileDto.gender;

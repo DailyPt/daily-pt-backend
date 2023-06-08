@@ -4,7 +4,6 @@ import { DietService } from './diet.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DietEntity } from '../entities/diet.entity';
 import { UserEntity } from '../entities/user.entity';
-import { IngredientEntity } from '../entities/ingredient.entity';
 import { FoodEntity } from '../entities/food.entity';
 import { FirebaseMiddleware } from '../middlewares/firebase.middleware';
 import { CreateUserMiddleware } from '../middlewares/create-user.middleware';
@@ -17,7 +16,6 @@ import { ProfileEntity } from '../entities/profile.entity';
     TypeOrmModule.forFeature([
       UserEntity,
       DietEntity,
-      IngredientEntity,
       FoodEntity,
       ProfileEntity,
     ]),
@@ -35,7 +33,7 @@ import { ProfileEntity } from '../entities/profile.entity';
 export class DietModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(FirebaseMiddleware, CreateUserMiddleware).forRoutes({
-      path: 'diet/*',
+      path: 'diet*',
       method: RequestMethod.ALL,
     });
   }
