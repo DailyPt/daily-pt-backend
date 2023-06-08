@@ -31,6 +31,12 @@ export class DietEntity extends BaseEntity {
   @Column('varchar', { name: 'photo_link', nullable: false })
   photoLink: string;
 
+  @Column('varchar', { name: 'memo', nullable: false })
+  memo: string;
+
+  @Column('int', { name: 'rating', nullable: false })
+  rating: number;
+
   @Column('varchar', { name: 'date', nullable: false })
   date: string;
 

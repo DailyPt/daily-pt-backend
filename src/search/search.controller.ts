@@ -108,6 +108,7 @@ export class SearchController {
       memo: createDietDto.memo,
       rating: Number(createDietDto.rating),
       date: createDietDto.date,
+      quantity: createDietDto.quantity,
     };
     console.log(new Date(createDietDto.date));
     const { key, s3Object, contentType, url } =

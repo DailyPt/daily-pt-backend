@@ -10,7 +10,7 @@ export function ApiFile(fieldName: string, localOptions?: MulterOptions) {
     ApiBody({
       schema: {
         type: 'object',
-        required: [fieldName, 'foodId', 'memo', 'rating', 'date'],
+        required: [fieldName, 'foodId', 'quantity', 'memo', 'rating', 'date'],
         properties: {
           [fieldName]: {
             type: 'string',
@@ -20,13 +20,17 @@ export function ApiFile(fieldName: string, localOptions?: MulterOptions) {
             type: 'string',
             default: '123',
           },
+          quantity: {
+            type: 'string',
+            default: '3',
+          },
           memo: {
             type: 'string',
             default: '김재한 개 빡대가리',
           },
           rating: {
             type: 'string',
-            default: '4.5',
+            default: '5',
           },
           date: {
             type: 'string',

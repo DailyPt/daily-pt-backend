@@ -29,9 +29,10 @@ export class AwsService {
     url: string;
   }> {
     try {
-      const key = `${folder}/${Date.now()}_${path.basename(
-        file.originalname,
-      )}`.replace(/ /g, '');
+      const fileType: string[] = path.basename(file.originalname).split('.');
+      const key = `${folder}/${Date.now()}.${
+        fileType[fileType.length - 1]
+      }`.replace(/ /g, '');
       // 공백을 제거해주는 정규식
 
       console.log(key);
