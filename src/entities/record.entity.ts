@@ -14,6 +14,15 @@ export class RecordEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column('int', { name: 'user_id', nullable: false })
+  userId: number;
+
+  @Column('int', { name: 'nutrient_id', nullable: false })
+  nutrientId: number;
+
+  @Column('varchar', { name: 'date' })
+  date: string;
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',

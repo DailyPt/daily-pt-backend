@@ -18,6 +18,10 @@ export class ProfileEntity extends BaseEntity {
   @Column({ name: 'full_name', type: 'varchar' })
   name: string;
 
+  @ApiProperty({ default: '1998/11/11', type: 'string' })
+  @Column({ name: 'birth', type: 'varchar' })
+  birth: string;
+
   @ApiProperty({ default: '178.9', type: 'number' })
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   height: number;

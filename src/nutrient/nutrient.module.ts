@@ -4,7 +4,6 @@ import { NutrientService } from './nutrient.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { DietEntity } from '../entities/diet.entity';
-import { IngredientEntity } from '../entities/ingredient.entity';
 import { FoodEntity } from '../entities/food.entity';
 import { ProfileEntity } from '../entities/profile.entity';
 import { NutrientEntity } from '../entities/nutrient.entity';
@@ -13,6 +12,8 @@ import { FirebaseMiddleware } from '../middlewares/firebase.middleware';
 import { CreateUserMiddleware } from '../middlewares/create-user.middleware';
 import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
+import { AlarmEntity } from '../entities/alarm.entity';
+import { RecordEntity } from '../entities/record.entity';
 
 @Module({
   imports: [
@@ -21,9 +22,10 @@ import { UserService } from '../user/user.service';
       SupplementEntity,
       UserEntity,
       DietEntity,
-      IngredientEntity,
       FoodEntity,
       ProfileEntity,
+      AlarmEntity,
+      RecordEntity,
     ]),
   ],
   controllers: [NutrientController],
@@ -39,7 +41,7 @@ import { UserService } from '../user/user.service';
 export class NutrientModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(FirebaseMiddleware, CreateUserMiddleware).forRoutes({
-      path: 'nutrient/token*',
+      path: 'nutrient*',
       method: RequestMethod.ALL,
     });
   }

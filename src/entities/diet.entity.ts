@@ -3,16 +3,36 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { FoodEntity } from './food.entity';
 
 @Entity({ name: 'diet', orderBy: { id: 'ASC' } })
 export class DietEntity extends BaseEntity {
   @ApiProperty({ default: 729, type: 'number' })
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column('int', { name: 'user_id', nullable: false })
+  userId: number;
+
+  @ApiProperty()
+  @OneToOne((type) => FoodEntity, { cascade: true })
+  @JoinColumn()
+  food: FoodEntity;
+
+  @Column('int', { name: 'quantity', nullable: false })
+  quantity: number;
+
+  @Column('varchar', { name: 'photo_link', nullable: false })
+  photoLink: string;
+
+  @Column('varchar', { name: 'date', nullable: false })
+  date: string;
 
   @CreateDateColumn({
     name: 'created_at',

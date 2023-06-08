@@ -120,7 +120,7 @@ export class SearchController {
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '',
-      data: { name: photo.originalname, createDietDto: diet },
+      data: { name: photo.originalname, createDietDto: diet, url },
     });
   }
 }
