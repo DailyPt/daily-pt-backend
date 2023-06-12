@@ -41,3 +41,22 @@ export function ApiFile(fieldName: string, localOptions?: MulterOptions) {
     }),
   );
 }
+
+export function ApiPhoto(localOptions?: MulterOptions) {
+  return applyDecorators(
+    UseInterceptors(FileInterceptor('photo', localOptions)),
+    ApiConsumes('multipart/form-data'),
+    ApiBody({
+      schema: {
+        type: 'object',
+        required: ['photo'],
+        properties: {
+          photo: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    }),
+  );
+}

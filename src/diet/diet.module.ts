@@ -11,9 +11,14 @@ import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
 import { ProfileEntity } from '../entities/profile.entity';
 import { AwsService } from '../aws/aws.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
     TypeOrmModule.forFeature([
       UserEntity,
       DietEntity,

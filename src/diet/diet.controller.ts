@@ -30,9 +30,10 @@ import { ArrayResponse, DataResponse } from '../utils/swagger';
 import { Request, Response } from 'express';
 import { CreateDietDto } from './dto/create-diet.dto';
 import { UpdateDietDto } from './dto/update-diet.dto';
-import { ApiFile } from '../utils/api-file.decorator';
+import { ApiFile, ApiPhoto } from '../utils/api-file.decorator';
 import { AwsService } from '../aws/aws.service';
 import { DietEntity } from '../entities/diet.entity';
+import { FoodEntity } from '../entities/food.entity';
 
 @Controller('diet')
 @UseFilters(new ExceptionHandler())
@@ -62,6 +63,45 @@ export class DietController {
         status: HttpStatus.OK,
         message: `${req.dbUser.email}의 삭제된 식단`,
         data: del_diets,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '사진 인식 API',
+    description: '사진을 인식하여 어떤 음식인지 알려준다.',
+  })
+  @ApiResponse(DataResponse(HttpStatus.OK, '사진 인식 완료!', DietEntity))
+  @ApiPhoto()
+  @Post('photo')
+  async recognizePhoto(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    photo: Express.Multer.File,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const result: number[] = await this.dietService.recognizePhoto(photo);
+      console.log(process.env.AI_SERVER_URL);
+
+      const foods = this.dietService.getFoodListByRecognization(result);
+
+      console.log(`foods : ${foods}`);
+
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: '식단 인식 완료!',
+        data: await foods,
       });
     } catch (e) {
       throw new HttpException(e.message, e.status);
