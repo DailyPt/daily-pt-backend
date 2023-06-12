@@ -5,6 +5,12 @@ import { DietEntity } from '../entities/diet.entity';
 import { CreateDietDto } from './dto/create-diet.dto';
 import { FoodEntity } from '../entities/food.entity';
 import { UpdateDietDto } from './dto/update-diet.dto';
+import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import * as process from 'process';
+import * as FormData from 'form-data';
+import { foodNuberList } from './constant/food.number';
 
 @Injectable()
 export class DietService {
@@ -13,6 +19,7 @@ export class DietService {
     private dietRepository: Repository<DietEntity>,
     @InjectRepository(FoodEntity)
     private foodRepository: Repository<FoodEntity>,
+    private readonly httpService: HttpService,
   ) {}
 
   async getDietById(id: number, userId: number): Promise<DietEntity> {
@@ -23,18 +30,22 @@ export class DietService {
       });
       if (!result) {
         throw new HttpException(
-          `${id}에 해당하는 식단이 없습니다.`,
+          `id : ${id}, 해당하는 식단이 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
 
       return result;
     } catch (e) {
-      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+      throw new HttpException(e.message, e.status);
     }
   }
 
-  async getDietsByDate(start: Date, end: Date, userId: number): Promise<any> {
+  async getDietsByDate(
+    start: Date,
+    end: Date,
+    userId: number,
+  ): Promise<DietEntity[]> {
     try {
       const result: DietEntity[] = await this.dietRepository.find({
         where: { userId, isDeleted: false, date: Between(start, end) },
@@ -42,7 +53,7 @@ export class DietService {
       });
       return result;
     } catch (e) {
-      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+      throw new HttpException(e.message, e.status);
     }
   }
 
@@ -61,7 +72,7 @@ export class DietService {
 
       return result;
     } catch (e) {
-      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+      throw new HttpException(e.message, e.status);
     }
   }
 
@@ -77,7 +88,7 @@ export class DietService {
       });
       if (!result) {
         throw new HttpException(
-          `${id}에 해당하는 식단이 없습니다.`,
+          `id : ${id}, 해당하는 식단이 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
@@ -89,11 +100,11 @@ export class DietService {
 
       return await result.save();
     } catch (e) {
-      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+      throw new HttpException(e.message, e.status);
     }
   }
 
-  async deleteDietById(id: number, userId: number): Promise<any> {
+  async deleteDietById(id: number, userId: number): Promise<DietEntity> {
     try {
       const result: DietEntity = await this.dietRepository.findOne({
         where: { id, userId, isDeleted: false },
@@ -101,7 +112,7 @@ export class DietService {
       });
       if (!result) {
         throw new HttpException(
-          `${id}에 해당하는 식단이 없습니다.`,
+          `id : ${id}, 해당하는 식단이 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
@@ -109,7 +120,27 @@ export class DietService {
       result.isDeleted = true;
       return await result.save();
     } catch (e) {
-      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async restoreDietById(id: number, userId: number): Promise<DietEntity> {
+    try {
+      const result: DietEntity = await this.dietRepository.findOne({
+        where: { id, userId, isDeleted: true },
+        relations: ['food'],
+      });
+      if (!result) {
+        throw new HttpException(
+          `id : ${id}, 해당하는 식단이 없습니다.`,
+          HttpStatus.NO_CONTENT,
+        );
+      }
+
+      result.isDeleted = false;
+      return await result.save();
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
     }
   }
 
@@ -133,7 +164,75 @@ export class DietService {
 
       return await this.dietRepository.save(diet);
     } catch (e) {
-      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async recognizePhoto(photo: Express.Multer.File): Promise<number[]> {
+    try {
+      const formData: FormData = new FormData();
+
+      formData.append('file', Buffer.from(photo.buffer), {
+        filename: photo.originalname,
+      });
+
+      const { data } = await firstValueFrom(
+        this.httpService
+          .post<any[]>(`${process.env.AI_SERVER_URL}/photo`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .pipe(
+            catchError((error: AxiosError) => {
+              throw new HttpException(
+                error.response.data,
+                error.response.status,
+              );
+            }),
+          ),
+      );
+      return data;
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async getFoodListByRecognization(foodList: number[]) {
+    try {
+      // const result: FoodEntity[] = [];
+      // await foodList.forEach((foodNumber: number) => {
+      //   console.log(`${foodNumber}, ${foodNuberList[foodNumber]} : number`);
+      //   this.foodRepository
+      //     .findOne({
+      //       where: { id: foodNuberList[foodNumber] },
+      //     })
+      //     .then((res) => {
+      //       result.push(res);
+      //       console.log(res);
+      //     });
+      // });
+
+      const result = [];
+      for (const foodNumber of foodList) {
+        result.push(
+          await this.foodRepository.findOne({
+            where: { id: foodNuberList[foodNumber] },
+          }),
+        );
+      }
+      // foodList.map(async (foodNumber: number) => {
+      //   await result.push(
+      //     await this.foodRepository.findOne({
+      //       where: { id: foodNuberList[foodNumber] },
+      //     }),
+      //   );
+      // });
+      console.log(`result : ${result}`);
+
+      return result;
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
     }
   }
 }
