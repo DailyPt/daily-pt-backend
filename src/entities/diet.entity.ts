@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,7 +23,7 @@ export class DietEntity extends BaseEntity {
   userId: number;
 
   @ApiProperty()
-  @OneToOne((type) => FoodEntity, { cascade: true })
+  @ManyToOne((type) => FoodEntity, { cascade: true })
   @JoinColumn()
   food: FoodEntity;
 

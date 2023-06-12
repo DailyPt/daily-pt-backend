@@ -131,7 +131,7 @@ export class DietService {
       diet.photoLink = photoLink;
       diet.date = new Date(createDietDto.date);
 
-      return this.dietRepository.save(diet);
+      return await this.dietRepository.save(diet);
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
     }
