@@ -200,19 +200,6 @@ export class DietService {
 
   async getFoodListByRecognization(foodList: number[]) {
     try {
-      // const result: FoodEntity[] = [];
-      // await foodList.forEach((foodNumber: number) => {
-      //   console.log(`${foodNumber}, ${foodNuberList[foodNumber]} : number`);
-      //   this.foodRepository
-      //     .findOne({
-      //       where: { id: foodNuberList[foodNumber] },
-      //     })
-      //     .then((res) => {
-      //       result.push(res);
-      //       console.log(res);
-      //     });
-      // });
-
       const result = [];
       for (const foodNumber of foodList) {
         result.push(
@@ -221,14 +208,6 @@ export class DietService {
           }),
         );
       }
-      // foodList.map(async (foodNumber: number) => {
-      //   await result.push(
-      //     await this.foodRepository.findOne({
-      //       where: { id: foodNuberList[foodNumber] },
-      //     }),
-      //   );
-      // });
-      console.log(`result : ${result}`);
 
       return result;
     } catch (e) {
