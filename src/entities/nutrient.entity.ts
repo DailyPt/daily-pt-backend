@@ -4,7 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -22,7 +22,7 @@ export class NutrientEntity extends BaseEntity {
   userId: number;
 
   @ApiProperty()
-  @OneToOne((type) => SupplementEntity, { cascade: true })
+  @ManyToOne((type) => SupplementEntity, { cascade: true })
   @JoinColumn()
   supplement: SupplementEntity;
 

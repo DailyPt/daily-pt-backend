@@ -34,7 +34,11 @@ export class DietService {
     }
   }
 
-  async getDietsByDate(start: Date, end: Date, userId: number): Promise<any> {
+  async getDietsByDate(
+    start: Date,
+    end: Date,
+    userId: number,
+  ): Promise<DietEntity[]> {
     try {
       const result: DietEntity[] = await this.dietRepository.find({
         where: { userId, isDeleted: false, date: Between(start, end) },
@@ -93,7 +97,7 @@ export class DietService {
     }
   }
 
-  async deleteDietById(id: number, userId: number): Promise<any> {
+  async deleteDietById(id: number, userId: number): Promise<DietEntity> {
     try {
       const result: DietEntity = await this.dietRepository.findOne({
         where: { id, userId, isDeleted: false },
