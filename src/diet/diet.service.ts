@@ -23,7 +23,7 @@ export class DietService {
       });
       if (!result) {
         throw new HttpException(
-          `${id}에 해당하는 식단이 없습니다.`,
+          `id : ${id}, 해당하는 식단이 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
@@ -81,7 +81,7 @@ export class DietService {
       });
       if (!result) {
         throw new HttpException(
-          `${id}에 해당하는 식단이 없습니다.`,
+          `id : ${id}, 해당하는 식단이 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
@@ -105,12 +105,32 @@ export class DietService {
       });
       if (!result) {
         throw new HttpException(
-          `${id}에 해당하는 식단이 없습니다.`,
+          `id : ${id}, 해당하는 식단이 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
 
       result.isDeleted = true;
+      return await result.save();
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+    }
+  }
+
+  async restoreDietById(id: number, userId: number): Promise<DietEntity> {
+    try {
+      const result: DietEntity = await this.dietRepository.findOne({
+        where: { id, userId, isDeleted: true },
+        relations: ['food'],
+      });
+      if (!result) {
+        throw new HttpException(
+          `id : ${id}, 해당하는 식단이 없습니다.`,
+          HttpStatus.NO_CONTENT,
+        );
+      }
+
+      result.isDeleted = false;
       return await result.save();
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);

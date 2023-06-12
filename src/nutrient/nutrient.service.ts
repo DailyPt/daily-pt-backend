@@ -24,7 +24,7 @@ export class NutrientService {
       });
       if (!result) {
         throw new HttpException(
-          `id : ${id}에 해당하는 영양제가 없습니다.`,
+          `id : ${id}, 해당하는 영양제가 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
@@ -82,7 +82,7 @@ export class NutrientService {
       });
       if (!result) {
         throw new HttpException(
-          `id : ${id}에 해당하는 영양제가 없습니다.`,
+          `id : ${id}, 해당하는 영양제가 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
@@ -106,12 +106,36 @@ export class NutrientService {
       });
       if (!result) {
         throw new HttpException(
-          `id : ${id}에 해당하는 영양제가 없습니다.`,
+          `id : ${id}, 해당하는 영양제가 없습니다.`,
           HttpStatus.NO_CONTENT,
         );
       }
 
       result.isDeleted = true;
+
+      return await result.save();
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+    }
+  }
+
+  async restoreNutrientById(
+    id: number,
+    userId: number,
+  ): Promise<NutrientEntity> {
+    try {
+      const result: NutrientEntity = await this.nutrientRepository.findOne({
+        where: { id, userId, isDeleted: true },
+        relations: ['supplement'],
+      });
+      if (!result) {
+        throw new HttpException(
+          `id : ${id}, 해당하는 영양제가 없습니다.`,
+          HttpStatus.NO_CONTENT,
+        );
+      }
+
+      result.isDeleted = false;
 
       return await result.save();
     } catch (e) {

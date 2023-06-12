@@ -91,7 +91,11 @@ export class NutrientController {
     description: '사용자의 모든 영양제를 조회한다.',
   })
   @ApiResponse(
-    ArrayResponse(HttpStatus.OK, '5개 영양제 조회 완료!', NutrientEntity),
+    ArrayResponse(
+      HttpStatus.OK,
+      'test@test.com님의 영양제 조회 완료!',
+      NutrientEntity,
+    ),
   )
   @Get('')
   async getAllNutrients(@Req() req: Request, @Res() res: Response) {
@@ -114,7 +118,9 @@ export class NutrientController {
     summary: '영양제 생성 API',
     description: '사용자의 영양제를 생성한다.',
   })
-  @ApiResponse(DataResponse(HttpStatus.OK, '영양제 생성 완료!', NutrientEntity))
+  @ApiResponse(
+    DataResponse(HttpStatus.OK, '영양제 기록 생성 완료!', NutrientEntity),
+  )
   @Post('')
   async createNutrient(
     @Body() createNutrientDto: CreateNutrientDto,
@@ -143,7 +149,9 @@ export class NutrientController {
     summary: '영양제 수정 API',
     description: '사용자의 특정 영양제를 수정한다.',
   })
-  @ApiResponse(DataResponse(HttpStatus.OK, '영양제 수정 완료!', NutrientEntity))
+  @ApiResponse(
+    DataResponse(HttpStatus.OK, 'id : 3, 영양제 수정 완료!', NutrientEntity),
+  )
   @Put(':id')
   async updateNutrient(
     @Param('id') id: number,
@@ -176,7 +184,7 @@ export class NutrientController {
       '사용자의 특정 영양제를 부드러운 삭제한다. (30일 내로 복원 가능)',
   })
   @ApiResponse(
-    DataResponse(HttpStatus.OK, '영양제 삭제 완료 완료!', NutrientEntity),
+    DataResponse(HttpStatus.OK, 'id: 3, 영양제 삭제 완료!', NutrientEntity),
   )
   @Delete(':id')
   async deleteNutrient(
@@ -192,6 +200,34 @@ export class NutrientController {
         status: HttpStatus.OK,
         message: `id : ${id}, 영양제 삭제 완료`,
         data: del_nutrient,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '영양제 복원 API',
+    description: '삭제된 특정 영양제를 복원한다.',
+  })
+  @ApiResponse(
+    DataResponse(HttpStatus.OK, 'id : 4, 영양제 복원 완료!', NutrientEntity),
+  )
+  @Get('restore/:id')
+  async restoreNutrient(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const nutrient: NutrientEntity =
+      await this.nutrientService.restoreNutrientById(id, req.dbUser.id);
+
+    try {
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `id : ${id}, 영양제 복원 완료!`,
+        data: nutrient,
       });
     } catch (e) {
       throw new HttpException(e.message, e.status);
