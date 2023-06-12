@@ -17,14 +17,14 @@ export class CreateDietDto {
   readonly quantity: number;
 
   @ApiProperty({ default: '', type: 'string' })
-  @IsNotEmpty()
+  @IsOptional()
   readonly memo: string;
 
   @ApiProperty({ default: 5, type: 'number' })
   @IsNotEmpty()
   readonly rating: number;
 
-  @ApiProperty({ type: 'Date' })
+  @ApiProperty({ type: 'Date', default: '2023-06-08T03:55:03.671Z' })
   @IsNotEmpty()
   readonly date: string;
 }

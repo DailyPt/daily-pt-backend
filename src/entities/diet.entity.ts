@@ -46,8 +46,8 @@ export class DietEntity extends BaseEntity {
   rating: number;
 
   @ApiProperty({ default: '2023/06/07 12:32', type: 'string' })
-  @Column('varchar', { name: 'date', nullable: false })
-  date: string;
+  @Column('timestamp', { name: 'date', nullable: false })
+  date: Date;
 
   @CreateDateColumn({
     name: 'created_at',

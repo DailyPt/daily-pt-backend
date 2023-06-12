@@ -112,7 +112,11 @@ export class DietController {
     @Res() res: Response,
   ) {
     try {
-      const diets: DietEntity[] = await this.dietService.getDietsByDate();
+      const diets: DietEntity[] = await this.dietService.getDietsByDate(
+        new Date(start),
+        new Date(end),
+        req.dbUser.id,
+      );
 
       res.status(HttpStatus.OK).json({
         status: HttpStatus.OK,

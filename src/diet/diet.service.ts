@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Between, ILike, Repository } from 'typeorm';
 import { DietEntity } from '../entities/diet.entity';
 import { CreateDietDto } from './dto/create-diet.dto';
 import { FoodEntity } from '../entities/food.entity';
@@ -34,9 +34,13 @@ export class DietService {
     }
   }
 
-  async getDietsByDate(): Promise<any> {
+  async getDietsByDate(start: Date, end: Date, userId: number): Promise<any> {
     try {
-      return 0;
+      const result: DietEntity[] = await this.dietRepository.find({
+        where: { userId, isDeleted: false, date: Between(start, end) },
+        relations: ['food'],
+      });
+      return result;
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.FORBIDDEN);
     }
@@ -81,7 +85,7 @@ export class DietService {
       result.quantity = diet.quantity;
       result.memo = diet.memo;
       result.rating = diet.rating;
-      result.date = diet.date;
+      result.date = new Date(diet.date);
 
       return await result.save();
     } catch (e) {
@@ -125,7 +129,7 @@ export class DietService {
       diet.memo = createDietDto.memo;
       diet.rating = createDietDto.rating;
       diet.photoLink = photoLink;
-      diet.date = createDietDto.date;
+      diet.date = new Date(createDietDto.date);
 
       return this.dietRepository.save(diet);
     } catch (e) {
