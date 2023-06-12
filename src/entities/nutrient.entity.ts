@@ -17,6 +17,7 @@ export class NutrientEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ default: 3, type: 'number' })
   @Column('int', { name: 'user_id', nullable: false })
   userId: number;
 
@@ -25,6 +26,7 @@ export class NutrientEntity extends BaseEntity {
   @JoinColumn()
   supplement: SupplementEntity;
 
+  @ApiProperty({ default: 3, type: 'number' })
   @Column('int', { name: 'quantity', nullable: false })
   quantity: number;
 

@@ -8,6 +8,8 @@ import { ProfileEntity } from '../entities/profile.entity';
 import { ResponseLoginDto } from '../user/dto/response-login.dto';
 import { ProfileDto } from '../user/dto/profile.dto';
 import { FoodEntity } from '../entities/food.entity';
+import { DietEntity } from '../entities/diet.entity';
+import { NutrientEntity } from '../entities/nutrient.entity';
 
 export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
@@ -32,6 +34,8 @@ export function setupSwagger(app: INestApplication): void {
       FoodEntity,
       ResponseLoginDto,
       ProfileDto,
+      DietEntity,
+      NutrientEntity,
       boolean,
     ],
   });

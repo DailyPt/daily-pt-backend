@@ -34,7 +34,7 @@ export function ApiFile(fieldName: string, localOptions?: MulterOptions) {
           },
           date: {
             type: 'string',
-            default: 'Thu May 18 2023 18:51:40 GMT+0900 (한국 표준시)',
+            default: '2023-06-11T20:30:00.000Z',
           },
         },
       },
