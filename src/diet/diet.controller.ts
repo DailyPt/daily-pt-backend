@@ -96,8 +96,6 @@ export class DietController {
 
       const foods = this.dietService.getFoodListByRecognization(result);
 
-      console.log(`foods : ${foods}`);
-
       res.status(HttpStatus.OK).json({
         status: HttpStatus.OK,
         message: '식단 인식 완료!',
