@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseFilters,
@@ -28,6 +29,8 @@ import { DietEntity } from '../entities/diet.entity';
 import { NutrientEntity } from '../entities/nutrient.entity';
 import { AlarmEntity } from '../entities/alarm.entity';
 import { UpdateAlarmDto } from './dto/update-alarm.dto';
+import { CreateRecordDto } from './dto/create-record.dto';
+import { RecordEntity } from '../entities/record.entity';
 
 @Controller('nutrient')
 @UseFilters(new ExceptionHandler())
@@ -356,6 +359,77 @@ export class NutrientController {
         status: HttpStatus.OK,
         message: `id : ${id}, 알람 삭제 완료!`,
         data: alarm,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '영양제 기록 생성 API',
+    description: '영양제 id를 통해 기록을 생성한다.',
+  })
+  @ApiResponse(
+    DataResponse(HttpStatus.OK, 'id : 4, 영양제 기록 생성 완료!', RecordEntity),
+  )
+  @Post('record/:id')
+  async createRecord(
+    @Param('id') id: number,
+    @Body() createRecordDto: CreateRecordDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const record: RecordEntity = await this.nutrientService.createRecord(
+      req.dbUser.id,
+      id,
+      createRecordDto,
+    );
+
+    try {
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `id : ${id}, 영양제 기록 생성 완료!`,
+        data: record,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '오늘 영양제 기록 조회 API',
+    description: '사용자 id를 통해 오늘의 영양제 기록을 조회한다.',
+  })
+  @ApiResponse(
+    ArrayResponse(
+      HttpStatus.OK,
+      'test@test.com님의 영양제 기록 조회 완료!',
+      RecordEntity,
+    ),
+  )
+  @Get('record')
+  async getRecordsOfToday(
+    @Query('date') date: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      if (!date) {
+        const now = new Date();
+        date = now.toISOString();
+      }
+
+      const records: RecordEntity[] = await this.nutrientService.getAllRecords(
+        req.dbUser.id,
+        date,
+      );
+
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `${req.dbUser.email}님, 영양제 기록 조회 완료!`,
+        data: records,
       });
     } catch (e) {
       throw new HttpException(e.message, e.status);

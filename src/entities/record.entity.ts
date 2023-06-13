@@ -22,12 +22,9 @@ export class RecordEntity extends BaseEntity {
   @Column('int', { name: 'nutrient_id', nullable: false })
   nutrientId: number;
 
-  @ApiProperty({
-    default: 'Thu May 18 2023 18:51:40 GMT+0900 (한국 표준시)',
-    type: 'string',
-  })
-  @Column('varchar', { name: 'date' })
-  date: string;
+  @ApiProperty({ default: '2023/06/07 12:32', type: 'string' })
+  @Column('timestamp', { name: 'date', nullable: false })
+  date: Date;
 
   @CreateDateColumn({
     name: 'created_at',
