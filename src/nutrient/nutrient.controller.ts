@@ -26,6 +26,8 @@ import { CreateNutrientDto } from './dto/create-nutrient.dto';
 import { UpdateNutrientDto } from './dto/update-nutrient.dto';
 import { DietEntity } from '../entities/diet.entity';
 import { NutrientEntity } from '../entities/nutrient.entity';
+import { AlarmEntity } from '../entities/alarm.entity';
+import { UpdateAlarmDto } from './dto/update-alarm.dto';
 
 @Controller('nutrient')
 @UseFilters(new ExceptionHandler())
@@ -228,6 +230,132 @@ export class NutrientController {
         status: HttpStatus.OK,
         message: `id : ${id}, 영양제 복원 완료!`,
         data: nutrient,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '특정 알람 조회 API',
+    description: '알람 id를 통해 알람을 조회한다.',
+  })
+  @ApiResponse(
+    DataResponse(HttpStatus.OK, 'id : 4, 알람 조회 완료!', AlarmEntity),
+  )
+  @Get('alarm/:id')
+  async getAlarm(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const alarm: AlarmEntity = await this.nutrientService.getOneAlarmById(
+      req.dbUser.id,
+      id,
+    );
+
+    try {
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `id : ${id}, 알람 조회 완료!`,
+        data: alarm,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '영양제의 알람 API',
+    description: '영양제 id를 통해 알람을 조회 한다.',
+  })
+  @ApiResponse(
+    ArrayResponse(
+      HttpStatus.OK,
+      'test@test.com님의 알람 조회 완료!',
+      AlarmEntity,
+    ),
+  )
+  @Get('alarm/all/:id')
+  async getAllAlarmsByNutrientId(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const alarm: AlarmEntity[] = await this.nutrientService.getAllAlarms(
+      req.dbUser.id,
+      id,
+    );
+
+    try {
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `${req.dbUser.email}님의 알람 조회 완료!`,
+        data: alarm,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '특정 알람 수정 API',
+    description: '알람 id를 통해 알람을 수정한다.',
+  })
+  @ApiResponse(
+    DataResponse(HttpStatus.OK, 'id : 4, 알람 수정 완료!', AlarmEntity),
+  )
+  @Put('alarm/:id')
+  async updateAlarm(
+    @Param('id') id: number,
+    @Body() updateAlarmDto: UpdateAlarmDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const alarm: AlarmEntity = await this.nutrientService.updateAlarm(
+      req.dbUser.id,
+      id,
+      updateAlarmDto,
+    );
+
+    try {
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `id : ${id}, 알람 수정 완료!`,
+        data: alarm,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
+    summary: '특정 알람 삭제 API',
+    description: '알람 id를 통해 알람을 삭제한다.',
+  })
+  @ApiResponse(
+    DataResponse(HttpStatus.OK, 'id : 4, 알람 삭제 완료!', AlarmEntity),
+  )
+  @Delete('alarm/:id')
+  async deleteAlarm(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const alarm: AlarmEntity = await this.nutrientService.deleteAlarm(
+      req.dbUser.id,
+      id,
+    );
+
+    try {
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `id : ${id}, 알람 삭제 완료!`,
+        data: alarm,
       });
     } catch (e) {
       throw new HttpException(e.message, e.status);
