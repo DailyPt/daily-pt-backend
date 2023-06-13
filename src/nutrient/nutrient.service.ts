@@ -174,17 +174,27 @@ export class NutrientService {
       nutrient.quantity = createNutrientDto.quantity;
       nutrient.days = createNutrientDto.days.toString();
 
+      await nutrient.save();
+      const result: NutrientEntity[] = await this.nutrientRepository.find({
+        take: 1,
+        order: { id: 'DESC' },
+      });
+
       for (const time of createNutrientDto.times) {
         const alarm: AlarmEntity = new AlarmEntity();
         for (const day of createNutrientDto.days) {
           alarm[daysEnum[day]] = true;
         }
         alarm.time = time;
+        alarm.userId = userId;
+        alarm.nutrientId = result[0].id;
+
         await alarm.save();
       }
 
-      return await nutrient.save();
+      return result[0];
     } catch (e) {
+      console.log(e);
       throw new HttpException(e.message, e.status);
     }
   }
@@ -277,13 +287,12 @@ export class NutrientService {
   async createRecord(
     userId: number,
     nutrientId: number,
-    createRecordDto: CreateRecordDto,
   ): Promise<RecordEntity> {
     try {
       const record: RecordEntity = new RecordEntity();
       record.userId = userId;
-      record.nutrientId = createRecordDto.nutrientId;
-      record.date = createRecordDto.date;
+      record.nutrientId = nutrientId;
+      record.date = new Date();
 
       return await record.save();
     } catch (e) {

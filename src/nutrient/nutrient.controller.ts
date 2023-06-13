@@ -31,6 +31,7 @@ import { AlarmEntity } from '../entities/alarm.entity';
 import { UpdateAlarmDto } from './dto/update-alarm.dto';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { RecordEntity } from '../entities/record.entity';
+import { GetRecordQuery } from './dto/record-query.dto';
 
 @Controller('nutrient')
 @UseFilters(new ExceptionHandler())
@@ -281,15 +282,15 @@ export class NutrientController {
       AlarmEntity,
     ),
   )
-  @Get('alarm/all/:id')
+  @Get('alarm/all/:nutrientId')
   async getAllAlarmsByNutrientId(
-    @Param('id') id: number,
+    @Param('nutrientId') nutrientId: number,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     const alarm: AlarmEntity[] = await this.nutrientService.getAllAlarms(
       req.dbUser.id,
-      id,
+      nutrientId,
     );
 
     try {
@@ -373,23 +374,21 @@ export class NutrientController {
   @ApiResponse(
     DataResponse(HttpStatus.OK, 'id : 4, 영양제 기록 생성 완료!', RecordEntity),
   )
-  @Post('record/:id')
+  @Post('record/:nutrientId')
   async createRecord(
-    @Param('id') id: number,
-    @Body() createRecordDto: CreateRecordDto,
+    @Param('nutrientId') nutrientId: number,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     const record: RecordEntity = await this.nutrientService.createRecord(
       req.dbUser.id,
-      id,
-      createRecordDto,
+      nutrientId,
     );
 
     try {
       res.status(HttpStatus.OK).json({
         status: HttpStatus.OK,
-        message: `id : ${id}, 영양제 기록 생성 완료!`,
+        message: `nutrientId : ${nutrientId}, 영양제 기록 생성 완료!`,
         data: record,
       });
     } catch (e) {
@@ -410,12 +409,13 @@ export class NutrientController {
     ),
   )
   @Get('record')
-  async getRecordsOfToday(
-    @Query('date') date: string,
+  async getRecordsByDate(
+    @Query() queryParams: GetRecordQuery,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     try {
+      let date = queryParams.date;
       if (!date) {
         const now = new Date();
         date = now.toISOString();
