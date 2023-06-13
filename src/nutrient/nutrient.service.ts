@@ -363,8 +363,16 @@ export class NutrientService {
           HttpStatus.NO_CONTENT,
         );
       }
+      const result: RecordEntity[] = [];
+      for (const record of records) {
+        record.nutrient = await this.getNutrientById(
+          record.nutrient.id,
+          userId,
+        );
+        result.push(record);
+      }
 
-      return records;
+      return result;
     } catch (e) {
       throw new HttpException(e.message, e.status);
     }
