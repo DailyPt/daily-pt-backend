@@ -289,9 +289,19 @@ export class NutrientService {
     nutrientId: number,
   ): Promise<RecordEntity> {
     try {
+      const nutrient: NutrientEntity = await this.nutrientRepository.findOne({
+        where: { id: nutrientId },
+      });
+      if (!nutrient) {
+        throw new HttpException(
+          `id : ${nutrientId}, 해당하는 영양제 기록이 없습니다.`,
+          HttpStatus.NO_CONTENT,
+        );
+      }
+
       const record: RecordEntity = new RecordEntity();
       record.userId = userId;
-      record.nutrientId = nutrientId;
+      record.nutrient = nutrient;
       record.date = new Date();
 
       return await record.save();
@@ -321,8 +331,9 @@ export class NutrientService {
 
       const records: RecordEntity[] = await this.recordRepository.find({
         where: { userId, date: Between(start, end) },
+        relations: ['nutrient'],
       });
-      if (!records) {
+      if (!records.length) {
         throw new HttpException(
           `userId : ${userId}, 해당하는 영양제 복용 기록이 없습니다.`,
           HttpStatus.NO_CONTENT,

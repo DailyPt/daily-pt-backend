@@ -272,7 +272,7 @@ export class NutrientController {
 
   @ApiBearerAuth('firebase_token')
   @ApiOperation({
-    summary: '영양제의 알람 API',
+    summary: '영양제의 알람 조회 API',
     description: '영양제 id를 통해 알람을 조회 한다.',
   })
   @ApiResponse(
@@ -426,7 +426,6 @@ export class NutrientController {
         data: records,
       });
     } catch (e) {
-      console.log(e);
       throw new HttpException(e.message, e.status);
     }
   }
