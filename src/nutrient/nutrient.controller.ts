@@ -408,22 +408,16 @@ export class NutrientController {
       RecordEntity,
     ),
   )
-  @Get('record')
+  @Get('record/date')
   async getRecordsByDate(
     @Query() queryParams: GetRecordQuery,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     try {
-      let date = queryParams.date;
-      if (!date) {
-        const now = new Date();
-        date = now.toISOString();
-      }
-
       const records: RecordEntity[] = await this.nutrientService.getAllRecords(
         req.dbUser.id,
-        date,
+        queryParams.date ? queryParams.date : new Date().toString(),
       );
 
       res.status(HttpStatus.OK).json({
@@ -432,6 +426,7 @@ export class NutrientController {
         data: records,
       });
     } catch (e) {
+      console.log(e);
       throw new HttpException(e.message, e.status);
     }
   }
