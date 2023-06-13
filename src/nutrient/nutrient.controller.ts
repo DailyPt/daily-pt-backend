@@ -426,7 +426,6 @@ export class NutrientController {
         data: records,
       });
     } catch (e) {
-      console.log(e);
       throw new HttpException(e.message, e.status);
     }
   }

@@ -3,10 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { NutrientEntity } from './nutrient.entity';
 
 @Entity({ name: 'record', orderBy: { id: 'ASC' } })
 export class RecordEntity extends BaseEntity {
@@ -18,9 +21,10 @@ export class RecordEntity extends BaseEntity {
   @Column('int', { name: 'user_id', nullable: false })
   userId: number;
 
-  @ApiProperty({ default: 7, type: 'number' })
-  @Column('int', { name: 'nutrient_id', nullable: false })
-  nutrientId: number;
+  @ApiProperty()
+  @ManyToOne((type) => NutrientEntity, { cascade: true })
+  @JoinColumn()
+  nutrient: NutrientEntity;
 
   @ApiProperty({ default: '2023/06/07 12:32', type: 'string' })
   @Column('timestamp', { name: 'date', nullable: false })
