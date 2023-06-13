@@ -30,6 +30,10 @@ export class NutrientEntity extends BaseEntity {
   @Column('int', { name: 'quantity', nullable: false })
   quantity: number;
 
+  @ApiProperty({ default: '0/3/5', type: 'string' })
+  @Column('varchar', { name: 'days', nullable: false })
+  days: string;
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',

@@ -11,6 +11,7 @@ import { FoodEntity } from '../entities/food.entity';
 import { DietEntity } from '../entities/diet.entity';
 import { NutrientEntity } from '../entities/nutrient.entity';
 import { RecordEntity } from '../entities/record.entity';
+import { AlarmEntity } from '../entities/alarm.entity';
 
 export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
@@ -38,6 +39,7 @@ export function setupSwagger(app: INestApplication): void {
       DietEntity,
       NutrientEntity,
       RecordEntity,
+      AlarmEntity,
       boolean,
     ],
   });
