@@ -10,6 +10,7 @@ import { ProfileDto } from '../user/dto/profile.dto';
 import { FoodEntity } from '../entities/food.entity';
 import { DietEntity } from '../entities/diet.entity';
 import { NutrientEntity } from '../entities/nutrient.entity';
+import { RecordEntity } from '../entities/record.entity';
 
 export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
@@ -36,6 +37,7 @@ export function setupSwagger(app: INestApplication): void {
       ProfileDto,
       DietEntity,
       NutrientEntity,
+      RecordEntity,
       boolean,
     ],
   });

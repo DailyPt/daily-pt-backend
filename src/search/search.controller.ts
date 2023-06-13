@@ -102,26 +102,51 @@ export class SearchController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    console.log(photo);
-    const diet: CreateDietDto = {
-      foodId: Number(createDietDto.foodId),
-      memo: createDietDto.memo,
-      rating: Number(createDietDto.rating),
-      date: createDietDto.date,
-      quantity: createDietDto.quantity,
-    };
-    console.log(new Date(createDietDto.date));
-    const { key, s3Object, contentType, url } =
-      await this.awsService.uploadFileToS3('images', photo);
-    console.log(`key : ${key}`);
-    console.log(`s3Object : ${s3Object}`);
-    console.log(`contentType : ${contentType}`);
-    console.log(`url : ${url}`);
+    // console.log(photo);
+    // const diet: CreateDietDto = {
+    //   foodId: Number(createDietDto.foodId),
+    //   memo: createDietDto.memo,
+    //   rating: Number(createDietDto.rating),
+    //   date: createDietDto.date,
+    //   quantity: createDietDto.quantity,
+    // };
+    // console.log(new Date(createDietDto.date));
+    // const { key, s3Object, contentType, url } =
+    //   await this.awsService.uploadFileToS3('images', photo);
+    // console.log(`key : ${key}`);
+    // console.log(`s3Object : ${s3Object}`);
+    // console.log(`contentType : ${contentType}`);
+    // console.log(`url : ${url}`);
+
+    // 1. 현재 시간(Locale)
+    const curr = new Date();
+
+    // 3. UTC to KST (UTC + 9시간)
+    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+    const kr_curr = new Date(curr.getTime() + KR_TIME_DIFF);
+
+    const utcToday = new Date(
+      Date.UTC(
+        kr_curr.getFullYear(),
+        kr_curr.getUTCMonth(),
+        kr_curr.getUTCDate(),
+      ),
+    );
+    const start = new Date(utcToday.getTime() - KR_TIME_DIFF);
+    const end = new Date(start.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+    console.log(
+      kr_curr.getUTCFullYear(),
+      kr_curr.getUTCMonth() + 1,
+      kr_curr.getUTCDate(),
+    );
+    console.log(start);
+    console.log(end);
 
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       message: '',
-      data: { name: photo.originalname, createDietDto: diet, url },
+      //data: { name: photo.originalname, createDietDto: diet, url },
     });
   }
 }

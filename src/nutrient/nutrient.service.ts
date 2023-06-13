@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DietEntity } from '../entities/diet.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { NutrientEntity } from '../entities/nutrient.entity';
 import { SupplementEntity } from '../entities/supplement.entity';
 import { UpdateNutrientDto } from './dto/update-nutrient.dto';
@@ -10,6 +10,7 @@ import { AlarmEntity } from '../entities/alarm.entity';
 import { RecordEntity } from '../entities/record.entity';
 import { daysEnum } from './constant/day.enum';
 import { UpdateAlarmDto } from './dto/update-alarm.dto';
+import { CreateRecordDto } from './dto/create-record.dto';
 
 @Injectable()
 export class NutrientService {
@@ -266,6 +267,58 @@ export class NutrientService {
       result.isDeleted = true;
 
       return await result.save();
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async createRecord(
+    userId: number,
+    nutrientId: number,
+    createRecordDto: CreateRecordDto,
+  ): Promise<RecordEntity> {
+    try {
+      const record: RecordEntity = new RecordEntity();
+      record.userId = userId;
+      record.nutrientId = createRecordDto.nutrientId;
+      record.date = createRecordDto.date;
+
+      return await record.save();
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  async getAllRecords(userId: number, date: string): Promise<RecordEntity[]> {
+    try {
+      // 1. 현재 시간(Locale)
+      const curr = new Date(date);
+
+      // 3. UTC to KST (UTC + 9시간)
+      const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+      const kr_date = new Date(curr.getTime() + KR_TIME_DIFF);
+
+      const utcToday = new Date(
+        Date.UTC(
+          kr_date.getFullYear(),
+          kr_date.getUTCMonth(),
+          kr_date.getUTCDate(),
+        ),
+      );
+      const start = new Date(utcToday.getTime() - KR_TIME_DIFF);
+      const end = new Date(start.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+      const records: RecordEntity[] = await this.recordRepository.find({
+        where: { userId, date: Between(start, end) },
+      });
+      if (!records) {
+        throw new HttpException(
+          `userId : ${userId}, 해당하는 영양제 복용 기록이 없습니다.`,
+          HttpStatus.NO_CONTENT,
+        );
+      }
+
+      return records;
     } catch (e) {
       throw new HttpException(e.message, e.status);
     }
