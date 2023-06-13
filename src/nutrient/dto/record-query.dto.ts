@@ -2,7 +2,11 @@ import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GetRecordQuery {
-  @ApiProperty({ default: 3, type: 'number' })
+  @ApiProperty({
+    default: new Date().toISOString(),
+    type: 'string',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   date?: string;
