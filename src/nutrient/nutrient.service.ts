@@ -79,6 +79,30 @@ export class NutrientService {
     }
   }
 
+  async getNutrientByDay(
+    userId: number,
+    day: number,
+  ): Promise<NutrientEntity[]> {
+    try {
+      const result: NutrientEntity[] = await this.nutrientRepository.find({
+        where: { userId, isDeleted: false },
+        relations: ['supplement'],
+      });
+      if (!result) {
+        throw new HttpException(
+          `day : ${day}, 해당하는 영양제가 없습니다.`,
+          HttpStatus.NO_CONTENT,
+        );
+      }
+
+      return result.filter((nutrient) =>
+        nutrient.days.split(',').includes(day.toString()),
+      );
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
   async updateNutrientById(
     id: number,
     userId: number,

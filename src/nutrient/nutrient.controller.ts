@@ -121,6 +121,38 @@ export class NutrientController {
 
   @ApiBearerAuth('firebase_token')
   @ApiOperation({
+    summary: '특정 요일 영양제 조회 API',
+    description: '사용자의 요일별 영양제를 조회한다.',
+  })
+  @ApiResponse(
+    ArrayResponse(
+      HttpStatus.OK,
+      'test@test.com님의 영양제 조회 완료!',
+      NutrientEntity,
+    ),
+  )
+  @Get('day/:day')
+  async getNutrientsByDay(
+    @Param('day') day: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const nutrients: NutrientEntity[] =
+        await this.nutrientService.getNutrientByDay(req.dbUser.id, day);
+
+      res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: `${req.dbUser.email}님의 영양제 조회 완료!`,
+        data: nutrients,
+      });
+    } catch (e) {
+      throw new HttpException(e.message, e.status);
+    }
+  }
+
+  @ApiBearerAuth('firebase_token')
+  @ApiOperation({
     summary: '영양제 생성 API',
     description: '사용자의 영양제를 생성한다.',
   })
