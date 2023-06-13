@@ -97,6 +97,7 @@ export class NutrientService {
       }
 
       result.quantity = nutrient.quantity;
+      result.days = nutrient.days.toString();
 
       return await result.save();
     } catch (e) {
@@ -171,6 +172,7 @@ export class NutrientService {
 
       nutrient.userId = userId;
       nutrient.quantity = createNutrientDto.quantity;
+      nutrient.days = createNutrientDto.days.toString();
 
       for (const time of createNutrientDto.times) {
         const alarm: AlarmEntity = new AlarmEntity();
