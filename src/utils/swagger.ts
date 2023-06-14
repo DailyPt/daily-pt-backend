@@ -17,7 +17,7 @@ export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle('Daily PT API')
     .setDescription('Daily PT Today!')
-    .setVersion('1.0.0')
+    .setVersion('1.0.1')
     .addBearerAuth(
       {
         type: 'http',
